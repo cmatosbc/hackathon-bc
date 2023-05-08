@@ -14,7 +14,8 @@ import { useState, useRef, createInterpolateElement } from '@wordpress/element';
 // this HOC wrapping the component
 import { withSpokenMessages, Popover } from '@wordpress/components';
 
-import { prependHTTP } from '@wordpress/url';
+// NOT AN URL
+//import { prependHTTP } from '@wordpress/url';
 import {
 	create,
 	insert,
@@ -27,11 +28,22 @@ import {
 	split,
 	concat,
 } from '@wordpress/rich-text';
+
+/*
+Is not a link search, but a search field that can provide some results
+so we should add the correspondent component instead. Search Control +
+using State should work
+
 import {
 	__experimentalLinkControl as LinkControl,
 	store as blockEditorStore,
 } from '@wordpress/block-editor';
-import { useSelect } from '@wordpress/data';
+*/
+
+import { SearchControl } from '@wordpress/components';
+
+// NOT USING INTERNAL DATA, BUT EXTERNAL
+// import { useSelect } from '@wordpress/data';
 
 function InlineSportsUI( {
 	isActive,
