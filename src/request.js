@@ -16,6 +16,7 @@ export default function ( term ) {
 	  .then((data) => {
 	  	return data;
 	  })
-	  .then(result => console.log(result))
-	  .catch(error => console.log('error', error));
+	  .then(result => result.json())
+		.then(result => console.log(result))
+		.catch(error => console.log('error', error));
 }
