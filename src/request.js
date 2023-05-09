@@ -5,8 +5,9 @@ export default function ( term ) {
 	myHeaders.append("X-RapidAPI-Key", apiKey);
 	myHeaders.append("X-RapidAPI-Host", apiHost);
 	myHeaders.append("Content-type", "application/json");
-
-	var requestOptions = {
+	let venueId;
+  
+  var requestOptions = {
 	  method: 'GET',
 	  headers: myHeaders,
 	  redirect: 'follow'
@@ -28,4 +29,21 @@ export default function ( term ) {
 	  	console.log(results);
 	  })
 	  .catch(error => console.log('error', error));
+  
+  if (venueId) {
+	  fetch("https://api-football-v1.p.rapidapi.com/v3/venues?id=" + venueId, requestOptions)
+		  .then((data) => data.json())
+		  .then((data) => {
+			let parsed = { ...data };
+			let results = [];
+			parsed.response.forEach( (element, index) => {
+			  results.push({
+				venueName: element.name,
+				venueImage: element.image
+			  });
+			});
+			console.log(results);
+		  })
+		  .catch(error => console.log('error', error));
+	}
 }
