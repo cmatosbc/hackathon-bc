@@ -1,10 +1,7 @@
-
+import { apiKey, apiHost } from './config.js';
 
 export default function ( term ) {
-  
-  import { apiKey, apiHost } from './config.js';
-  
-  var myHeaders = new Headers();
+	var myHeaders = new Headers();
 	myHeaders.append("X-RapidAPI-Key", apiKey);
 	myHeaders.append("X-RapidAPI-Host", apiHost);
 	myHeaders.append("Content-type", "application/json");
@@ -16,9 +13,19 @@ export default function ( term ) {
 	};
 
 	fetch("https://api-football-v1.p.rapidapi.com/v3/teams?search=" + term, requestOptions)
+	  .then((data) => data.json())
 	  .then((data) => {
-	  	return data;
+	  	let parsed = { ...data };
+	  	let results = [];
+	  	parsed.response.forEach( (element, index) => {
+	  		results.push({
+	  			teamName: element.team.name,
+	  			teamCode: element.team.code,
+	  			teamId: element.team.id,
+	  			venueId: element.venue.id
+	  		});
+	  	});
+	  	console.log(results);
 	  })
-	  .then(result => console.log(result))
 	  .catch(error => console.log('error', error));
 }
