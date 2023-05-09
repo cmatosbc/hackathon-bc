@@ -3,7 +3,8 @@ import getDataFromApi from './request';
 
 import {
   registerFormatType,
-  toggleFormat
+  toggleFormat,
+  applyFormat
 } from '@wordpress/rich-text';
 
 import {
@@ -31,7 +32,8 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
     tagName: name,
     className: 'trigger-tag-' + name,
     attributes: {
-      dataId: 'data-id'
+      dataTeamId: 'data-team-id',
+      dataVenueId: 'data-venue-id'
     },
     edit ({ isActive, value, onChange }) {
 
@@ -40,16 +42,26 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
 
       if (value.activeFormats.length != 0) {
         apiResults = getDataFromApi(value.text.substring(value.start, value.end));
+        // PARSE RESULTS TO GET IDS
       }
 
       if (apiResults) {
         console.log(apiResults);
         maybePopover = createElement(Popover, {
-
+          // MOCK FOR POPOVER SELECT/SEARCH BOX
         });
       }
 
-      const onToggle = () => onChange(toggleFormat(value, { type }));
+      const onToggle = () => onChange(applyFormat(
+        value,
+        {
+          type,
+          attributes: {
+            dataTeamId: '89', // REPLACE FOR THE TEAM ID
+            dataVenueId: '90' // REPLACE FOR THE VENUE ID
+          }
+        }
+      ));
 
       return (
         createElement(Fragment, null,
