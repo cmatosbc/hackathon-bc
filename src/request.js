@@ -12,7 +12,7 @@ export default function ( term ) {
 	  redirect: 'follow'
 	};
 
-	fetch("https://api-football-v1.p.rapidapi.com/v3/teams?search=" + term, requestOptions)
+	const response = fetch("https://api-football-v1.p.rapidapi.com/v3/teams?search=" + term, requestOptions)
 	  .then((data) => data.json())
 	  .then((data) => {
 	  	let parsed = { ...data };
@@ -25,7 +25,12 @@ export default function ( term ) {
 	  			venueId: element.venue.id
 	  		});
 	  	});
-	  	console.log(results);
+	  	
+	  	return results;
 	  })
 	  .catch(error => console.log('error', error));
+
+	  if(response) {
+	  	return response;
+	  }
 }

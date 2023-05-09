@@ -40,13 +40,15 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
       var apiResults = false;
       let maybePopover = false;
 
-      if (value.activeFormats.length != 0) {
+      if (value.activeFormats.length != 0 && !apiResults) {
         apiResults = getDataFromApi(value.text.substring(value.start, value.end));
         // PARSE RESULTS TO GET IDS
+        apiResults.then((result) => {
+          console.log(result); // Resolved data (maybe setting up a store?)
+        });
       }
 
       if (apiResults) {
-        console.log(apiResults);
         maybePopover = createElement(Popover, {
           // MOCK FOR POPOVER SELECT/SEARCH BOX
         });
@@ -57,7 +59,7 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
         {
           type,
           attributes: {
-            dataTeamId: '89', // REPLACE FOR THE TEAM ID
+            dataTeamId: '90' , // REPLACE FOR THE TEAM ID
             dataVenueId: '90' // REPLACE FOR THE VENUE ID
           }
         }
