@@ -5,7 +5,8 @@ import './editor.scss';
 import {
   registerFormatType,
   toggleFormat,
-  applyFormat
+  applyFormat,
+  removeFormat
 } from '@wordpress/rich-text';
 
 import {
@@ -49,7 +50,7 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
       const dialog = useRef(null);
 
       function MyComboboxControl(props) {
-        console.log(props)
+
         const parsedData = props.data.map((teamItem) => {
           return {'value': teamItem.team.id, 'label': teamItem.team.name}
         });
@@ -59,8 +60,6 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
             label="Team"
             value={ team }
             onChange={ teamName => {
-
-              console.log(teamName);
 
               !!teamName && (
 
@@ -83,7 +82,20 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
         );
       }
 
-      if (isVisible === true) {
+      if (isVisible === true && value.activeFormats?.length !== 0) {
+        onChange(toggleFormat(
+          value,
+          {
+            type: type
+          },
+          value.start,
+          value.end
+        ));
+
+        setIsVisible(false);
+      }
+
+      if ( isVisible === true && value.activeFormats?.length === 0) {
 
         var myHeaders = new Headers();
         myHeaders.append("X-RapidAPI-Key", "784166e8damshc6d584f31ac3909p179b89jsn9d778e3690a7");
@@ -103,10 +115,7 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
           .then(result => result.json())
           .then(result => {
 
-            console.log(result.response)
-
             if (result.response.length === 0) {
-              console.log(dialog)
               dialog.current.showModal();
               setIsVisible(false);
               return;
