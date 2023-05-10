@@ -142,11 +142,11 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
         <>
           <RichTextShortcut
             type={'primary'}
-            character
+            character={character}
             onUse={onToggle}
           />
           <RichTextToolbarButton
-            title
+            title={title}
             onClick={onToggle}
             icon={addTemplate}
             isActive={isActive}
