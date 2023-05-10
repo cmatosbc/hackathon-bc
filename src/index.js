@@ -5,8 +5,7 @@ import './editor.scss';
 import {
   registerFormatType,
   toggleFormat,
-  applyFormat,
-  removeFormat
+  applyFormat
 } from '@wordpress/rich-text';
 
 import {
@@ -17,7 +16,7 @@ import {
 import { useState, useRef } from '@wordpress/element';
 
 import { addTemplate } from '@wordpress/icons';
-import { Popover, Button, SelectControl, PanelBody } from '@wordpress/components';
+import { SelectControl, PanelBody } from '@wordpress/components';
 import { createElement, Fragment } from '@wordpress/element';
 import { InspectorControls } from "@wordpress/block-editor";
 
@@ -52,7 +51,7 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
       function MyComboboxControl(props) {
 
         const parsedData = props.data.map((teamItem) => {
-          return {'value': teamItem.team.id, 'label': teamItem.team.name}
+          return {'value': teamItem.team.id, 'label': teamItem.team.name, 'venueId': teamItem.venue.id}
         });
 
         return (
@@ -61,9 +60,13 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
             value={ team }
             onChange={ teamName => {
 
-              !!teamName && (
+              if(!!teamName) {
 
-                setTeam(teamName),
+                const teamItem = parsedData.filter((item) => {
+                  return teamName == item.value
+                })
+
+                setTeam(teamName)
 
                 onChange(applyFormat(
                   value,
@@ -71,11 +74,11 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
                     type,
                     attributes: {
                       dataTeamId: teamName?.toString(), // REPLACE FOR THE TEAM ID
-                      // dataVenueId: selectedTeam[0]?.venueId?.toString() // REPLACE FOR THE VENUE ID
+                      dataVenueId: teamItem[0]?.venueId?.toString() // REPLACE FOR THE VENUE ID
                     }
                   }
                 ))
-              )
+              }
             }}
             options={ parsedData }
           />
@@ -125,7 +128,7 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
               setData(result.response);
               setIsVisible(false);
 
-              setTeam(result.response[0].team.id),
+              setTeam(result.response[0].team.id);
 
               onChange(applyFormat(
                 value,
@@ -133,7 +136,7 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
                   type,
                   attributes: {
                     dataTeamId: result.response?.[0]?.team?.id?.toString(), // REPLACE FOR THE TEAM ID
-                    // dataVenueId: selectedTeam[0]?.venueId?.toString() // REPLACE FOR THE VENUE ID
+                    dataVenueId: result.response?.[0]?.venue?.id?.toString() // REPLACE FOR THE VENUE ID
                   }
                 }
               ))
