@@ -13,10 +13,10 @@ import {
   RichTextShortcut
 } from '@wordpress/editor';
 
-import { useState } from '@wordpress/element';
+import { useState, useRef } from '@wordpress/element';
 
 import { addTemplate } from '@wordpress/icons';
-import { Popover, Button, ComboboxControl, PanelBody } from '@wordpress/components';
+import { Popover, Button, SelectControl, PanelBody } from '@wordpress/components';
 import { createElement, Fragment } from '@wordpress/element';
 import { InspectorControls } from "@wordpress/block-editor";
 
@@ -45,65 +45,45 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
         setIsVisible(!isVisible)
       }
       const [ data, setData ] = useState([]);
-      const [ teamId, setTeamId ] = useState(0);
-      const [ venueId, setVenueId ] = useState(0);
+      const [ team, setTeam ] = useState();
+      const dialog = useRef(null);
 
       function MyComboboxControl(props) {
         console.log(props)
         const parsedData = props.data.map((teamItem) => {
-          return {'value': teamItem.team.name, 'label': teamItem.team.name, 'teamId': teamItem.team.id, 'venueId': teamItem.venue.id}
+          return {'value': teamItem.team.id, 'label': teamItem.team.name}
         });
 
-        const [ team, setTeam ] = useState();
-        const [ filteredOptions, setFilteredOptions ] = useState( parsedData );
         return (
-          <ComboboxControl
+          <SelectControl
             label="Team"
             value={ team }
             onChange={ teamName => {
 
-              const selectedTeam = parsedData.filter((teamOption) => {
-                return teamOption.label === teamName
-              });
+              console.log(teamName);
 
-              !!selectedTeam && (
+              !!teamName && (
 
                 setTeam(teamName),
-                setTeamId(selectedTeam[0]?.teamId),
-                setVenueId(selectedTeam[0]?.venueId),
 
                 onChange(applyFormat(
                   value,
                   {
                     type,
                     attributes: {
-                      dataTeamId: selectedTeam[0]?.teamId?.toString(), // REPLACE FOR THE TEAM ID
-                      dataVenueId: selectedTeam[0]?.venueId?.toString() // REPLACE FOR THE VENUE ID
+                      dataTeamId: teamName?.toString(), // REPLACE FOR THE TEAM ID
+                      // dataVenueId: selectedTeam[0]?.venueId?.toString() // REPLACE FOR THE VENUE ID
                     }
                   }
                 ))
-
               )
             }}
-            options={ filteredOptions }
-            onFilterValueChange={ ( inputValue ) =>
-              setFilteredOptions(
-                parsedData.filter( ( option ) =>
-                  option.label
-                    .toLowerCase()
-                    .startsWith( inputValue.toLowerCase() )
-                )
-              )
-            }
+            options={ parsedData }
           />
         );
       }
 
-      console.log(value);
-      console.log(isVisible);
-
       if (isVisible === true) {
-        console.log('fetch')
 
         var myHeaders = new Headers();
         myHeaders.append("X-RapidAPI-Key", "784166e8damshc6d584f31ac3909p179b89jsn9d778e3690a7");
@@ -123,9 +103,31 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
           .then(result => result.json())
           .then(result => {
 
+            console.log(result.response)
+
+            if (result.response.length === 0) {
+              console.log(dialog)
+              dialog.current.showModal();
+              setIsVisible(false);
+              return;
+            }
+
             if (result) {
               setData(result.response);
               setIsVisible(false);
+
+              setTeam(result.response[0].team.id),
+
+              onChange(applyFormat(
+                value,
+                {
+                  type,
+                  attributes: {
+                    dataTeamId: result.response?.[0]?.team?.id?.toString(), // REPLACE FOR THE TEAM ID
+                    // dataVenueId: selectedTeam[0]?.venueId?.toString() // REPLACE FOR THE VENUE ID
+                  }
+                }
+              ))
             }
 
           })
@@ -134,16 +136,6 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
 
       const onToggle = () => {
         setActive();
-        // onChange(applyFormat(
-        //   value,
-        //   {
-        //     type,
-        //     attributes: {
-        //       dataTeamId: teamId.toString(), // REPLACE FOR THE TEAM ID
-        //       dataVenueId: venueId.toString() // REPLACE FOR THE VENUE ID
-        //     }
-        //   }
-        // ))
       };
 
       return (
@@ -162,6 +154,16 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
             shortcutCharacter={character}
             className={`toolbar-button-with-text toolbar-button__advanced-${name}`}
           />
+
+          <dialog ref={dialog}>
+            <p>Response is empty</p>
+            <form
+              method="dialog"
+              className='text-center'
+            >
+              <button>OK</button>
+            </form>
+          </dialog>
 
           {(data?.length > 0) && <InspectorControls>
             <PanelBody title="Team Option" initialOpen={true}>
