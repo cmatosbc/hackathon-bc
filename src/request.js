@@ -16,8 +16,8 @@ export default function ( term ) {
 	  .then((data) => data.json())
 	  .then((data) => {
 	  	let parsed = { ...data };
-	  	let results = [];
-	  	parsed.response.forEach( (element, index) => {
+		let results = [];
+		parsed.response.forEach( (element, index) => {
 	  		results.push({
 	  			teamName: element.team.name,
 	  			teamCode: element.team.code,
@@ -27,5 +27,24 @@ export default function ( term ) {
 	  	});
 	  	console.log(results);
 	  })
-	  .catch(error => console.log('error', error));
+		.catch(error => console.log('error', error));
+	
+	// console.log('Venue: ' + venueId);
+  //
+  // if (venueId) {
+	//   fetch("https://api-football-v1.p.rapidapi.com/v3/venues?id=" + venueId, requestOptions)
+	// 	  .then((data) => data.json())
+	// 	  .then((data) => {
+	// 		let parsed = { ...data };
+	// 		let results = [];
+	// 		parsed.response.forEach( (element, index) => {
+	// 		  results.push({
+	// 			venueName: element.name,
+	// 			venueImage: element.image
+	// 		  });
+	// 		});
+	// 		console.log(results);
+	// 	  })
+	// 	  .catch(error => console.log('error', error));
+	// }
 }
