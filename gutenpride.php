@@ -94,6 +94,10 @@ add_action('wp_footer', function() {
                         const slotImg = document.createElement('img');
                         slotImg.src = results[0].teamVenuePic;
                         slotImg.setAttribute('slot', 'stadium-img');
+                        const slotLogo = document.createElement('img');
+                        slotLogo.src = results[0].teamLogo;
+                        slotLogo.setAttribute('slot', 'logo');
+                        slotLogo.classList.add('img-fluid', 'rounded-circle', 'm-auto');
                         const theName = document.createElement('div');
                         theName.setAttribute('slot', 'team-name');
                         theName.textContent = results[0].teamName;
@@ -102,6 +106,7 @@ add_action('wp_footer', function() {
                         theVenue.textContent = results[0].teamVenue;
 
                         this.appendChild(slotImg);
+                        this.appendChild(slotLogo);
                         this.appendChild(theName);
                         this.appendChild(theVenue);
                       })
