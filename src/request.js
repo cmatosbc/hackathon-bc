@@ -28,7 +28,6 @@ export default async function ( term ) {
 					venueId: element.venue.id
 				});
 			});
-			console.log(results);
 		})
 		.catch(error => console.log('error', error));
 
