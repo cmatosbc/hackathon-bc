@@ -49,7 +49,8 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
     tagName: name,
     className: 'trigger-tag-' + name,
     attributes: {
-      dataId: 'data-id'
+      dataTeamId: 'data-team-id',
+      dataVenueId: 'data-venue-id'
     },
     edit: ({ isActive, value, onChange }) => {
 
@@ -93,9 +94,9 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
 
         const parsedData = props.data.map((teamItem) => {
           return {
-            'value': teamItem.team.id,
-            'label': teamItem.team.name,
-            'venueId': teamItem.venue.id
+            'value': teamItem.teamId,
+            'label': teamItem.teamName,
+            'venueId': teamItem.venueId
           }
         });
 
@@ -130,21 +131,21 @@ triggerTypes.forEach(({ name, title, character, icon }) => {
 
         getDataFromApi(value.text.substring(value.start, value.end))
         .then(result => {
-          if (result.response.length === 0) {
+          if (result.length === 0) {
             dialog.current.showModal();
             setIsVisible(false);
             return;
           }
 
-          if (result.response?.length > 0) {
-            setData(result.response);
+          if (result?.length > 0) {
+            setData(result);
             setIsVisible(false);
 
-            setTeam(result.response[0].team.id);
+            setTeam(result[0].teamId);
 
             addFormat(
-              result.response?.[0]?.team?.id?.toString(),
-              result.response?.[0]?.venue?.id?.toString()
+              result?.[0]?.teamId?.toString(),
+              result?.[0]?.venueId?.toString()
             );
           }
         });
